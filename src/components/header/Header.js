@@ -8,7 +8,10 @@ import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { SET_ACTIVE_USER } from "../../redux/slice/authSlice";
+import {
+  REMOVE_ACTIVE_USER,
+  SET_ACTIVE_USER,
+} from "../../redux/slice/authSlice";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -20,8 +23,6 @@ const Header = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // const uid = user.uid;
-
         if (user.displayName == null) {
           const u1 = user.email.substring(0, user.email.indexOf("@"));
           const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
@@ -39,9 +40,10 @@ const Header = () => {
         );
       } else {
         setDisplayName("");
+        dispatch(REMOVE_ACTIVE_USER);
       }
     });
-  }, []);
+  }, [dispatch, displayName]);
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
